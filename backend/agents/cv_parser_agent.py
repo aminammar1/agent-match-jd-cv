@@ -1,7 +1,7 @@
 import io
 from PyPDF2 import PdfReader
 
-async def parse_pdf(file_bytes: bytes) -> dict:
+async def parse_cv(file_bytes: bytes) -> dict:
     """
     Extract and return the complete text from a PDF file, or from plain text if the PDF is unavailable.
     """
