@@ -1,48 +1,84 @@
-# ai-powered-recruitment-app ↔️ Job Description Matcher
+<div align="center">
 
-Professional, full-stack application for automated candidate CV parsing, job-description summarization, and candidate-job matching using modular agent-based services.
+# 🤖 AI Recruitment App · CV ↔️ JD Matcher
 
-## Project overview
+Automated CV parsing, job description summarization, and candidate ↔️ job matching with FastAPI + React.
 
-Agent Match helps recruiters and hiring teams quickly find and assess candidates by:
+</div>
 
-- Parsing uploaded CVs and extracting structured data (skills, experience, education).
-- Summarizing and extracting key points from job descriptions.
-- Scoring and matching candidates to job descriptions.
-- Assisting with scheduling interviews and summarization tasks.
+---
 
-The repository contains a React frontend and a FastAPI backend with modular "agents" implementing parsing, matching, summarization, and scheduling logic.
+## 📑 Table of Contents
 
-## Repository layout
+1. 🧭 Overview
+2. ✨ Features
+3. 🧱 Architecture & Structure
+4. 🛠 Tech Stack
+5. 🚀 Quick Start
+6. ⚙️ Configuration
+7. 🔌 API Overview
+8. 🧪 Development Workflow
+9. ✅ Testing
+10. 🐳 Container Image
+11. ☁️ Render Deployment
+12. 🔄 CI/CD
+13. 🤝 Contributing
+14. 📄 License
 
-- `frontend/` — React + Vite UI. Components include `CandidateMatcher`, `Dashboard`, `InterviewScheduler`, `JobDescriptionSummary`, `PDFPreview`, and charts for skills.
-- `backend/` — FastAPI server. Key files:
-  - `main.py` — FastAPI app entry.
-  - `routes/` — API route modules (candidate and job routes).
-  - `agents/` — modular agent scripts: CV parsing, JD matching, summarizer, scheduler.
-  - `services/` — higher-level services orchestrating agents.
-  - `database/models.py` — data models.
+---
 
-## Key features
+## 🧭 Overview
 
-- Accurate CV parsing into structured candidate profiles.
-- Job description summarization and skills extraction.
-- Candidate-to-job matching with configurable scoring.
-- Simple UI for uploading CVs, viewing matches, and scheduling interviews.
-- Modular agent architecture for easy extension and replacement.
+This app helps recruiters rapidly evaluate candidates against job descriptions by:
 
-## Tech stack
+- Parsing CV files into structured profiles (skills, experience, education).
+- Summarizing and extracting skill signals from job descriptions.
+- Scoring & matching candidates to roles.
+- Supporting interview scheduling / summarization flows.
+
+The system is split into a React SPA and a FastAPI backend with modular "agents" (parsing, matching, summarizing, scheduling) for easy extension.
+
+## ✨ Features
+
+- CV parsing → structured candidate objects.
+- JD summarization & skill extraction.
+- Match scoring with extensible logic.
+- Single-container deployment (serves API + SPA).
+- Simple deployment scripts for Render.
+- Modular agent architecture.
+
+## 🧱 Architecture & Structure
+
+Top-level folders:
+
+| Path              | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `frontend/`       | React + Vite application (components, charts, pages).       |
+| `backend/`        | FastAPI app (`main.py`, routers, agents, services, models). |
+| `render-build.sh` | Build script (backend deps + frontend build).               |
+| `render-start.sh` | Start script (runs Uvicorn).                                |
+| `Dockerfile`      | Multi-stage build: frontend → backend runtime.              |
+
+Backend key areas:
+
+- `routes/` candidate + job API endpoints.
+- `agents/` feature-specific logic (parse, match, summarize, schedule).
+- `services/` orchestration / higher-level operations.
+- `database/models.py` data layer placeholder (swapable for real DB).
+
+## 🛠 Tech Stack
 
 - Frontend: React, Vite
-- Backend: Python, FastAPI, Uvicorn
-- Data: Simple local models (see `backend/database/models.py`), easily replaceable with a persistent database
-- Agents: Lightweight Python modules in `backend/agents`
+- Backend: FastAPI (Uvicorn ASGI server)
+- Language: Python 3.11, Node 20
+- Build: Multi-stage Docker (Node → Python slim)
+- Deployment Targets: Container platforms / Render Web Service
 
-## Quick start (Windows PowerShell)
+## 🚀 Quick Start (Windows / PowerShell)
 
-Run the app locally on Windows (PowerShell). These commands assume you are at the repository root.
+Local development (separate processes). At repo root.
 
-1. Backend — virtual environment, deps, run server
+1. Backend (venv + run)
 
 ```powershell
 # move into the backend folder
@@ -72,9 +108,9 @@ npm install
 npm run dev
 ```
 
-Open the frontend app in your browser at the address shown by Vite (usually `http://localhost:5173`) and ensure the backend is running at `http://localhost:8000` (update the frontend config if necessary).
+Visit frontend (usually `http://localhost:5173`) while backend runs on `http://localhost:8000`.
 
-## Configuration & environment
+## ⚙️ Configuration
 
 - Backend environment variables should be stored in `backend/.env` (do not commit secrets). Common variables:
 
@@ -83,7 +119,7 @@ Open the frontend app in your browser at the address shown by Vite (usually `htt
 
 - Frontend environment variables can be set via Vite's env files in `frontend/` when needed.
 
-## API & integration points
+## 🔌 API Overview
 
 - The backend exposes REST endpoints located in `backend/routes/` (candidate and job routes). Typical flows:
   - Upload CV -> candidate parsing endpoint
@@ -92,7 +128,7 @@ Open the frontend app in your browser at the address shown by Vite (usually `htt
 
 Inspect those files for exact endpoint names and request/response formats.
 
-## Development notes
+## 🧪 Development Workflow
 
 - Agents are small, focused modules. To change behavior, edit the relevant file under `backend/agents` and the service layer in `backend/services`.
 - Prefer small, testable changes. Unit-test parsing and matching logic independently.
@@ -103,7 +139,7 @@ Suggested workflow:
 2. Modify agent or service code.
 3. Add or update unit tests and validate via the API or UI.
 
-## Testing
+## ✅ Testing
 
 Add unit tests for critical agent logic (CV parsing, JD summarization, matching) using `pytest` in `backend/tests/` and run:
 
@@ -112,13 +148,13 @@ Add unit tests for critical agent logic (CV parsing, JD summarization, matching)
 pytest -q
 ```
 
-## Troubleshooting
+## 🛟 Troubleshooting
 
 - Backend port conflicts: change `--port` in the `uvicorn` command.
 - Dependency issues: ensure the virtual environment is activated and `pip install -r requirements.txt` completed.
 - Frontend CORS or API URL mismatch: update the API base URL in the frontend configuration to point at `http://localhost:8000`.
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome. Recommended steps:
 
@@ -126,10 +162,66 @@ Contributions are welcome. Recommended steps:
 2. Add or update unit tests for new behavior.
 3. Open a clear PR describing the change and motivation.
 
-## License & contact
+## 📄 License
 
 Licensed under the MIT License (c) 2025 Mohamed Amine Ammar.  
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.  
 For questions or support, please open an issue in the repository.
 
 ---
+
+## 🐳 Container Image
+
+Build single image (frontend build embedded, served by FastAPI):
+
+```powershell
+docker build -t cv-matcher .
+docker run -p 8000:8000 cv-matcher
+```
+
+Open http://localhost:8000 (API root) — SPA routes fallback to `index.html`.
+
+## ☁️ Deploy on Render
+
+1. Create Web Service (root of repo)
+2. Runtime: Python 3.11
+3. Build Command:
+
+```bash
+bash render-build.sh
+```
+
+4. Start Command:
+
+```bash
+bash render-start.sh
+```
+
+5. Configure env vars (API keys, DB URL, etc.)
+
+`render-build.sh` → installs backend deps, builds frontend, copies `frontend_dist`.
+`render-start.sh` → runs Uvicorn.
+
+## 🔄 CI/CD
+
+| Workflow      | Purpose                                                      |
+| ------------- | ------------------------------------------------------------ |
+| `ci.yml`      | Install deps, build frontend, integrate, smoke start server. |
+| `release.yml` | Build tagged images on GitHub Release publish.               |
+
+Possible enhancements (not enabled): caching layers, security scan, test matrix.
+
+---
+
+## 🤝 Contributing
+
+1. Fork & branch
+2. Implement change (keep agents modular)
+3. Ensure build passes (CI smoke)
+4. Open PR with clear description
+
+## 📄 License
+
+MIT License (c) 2025 Mohamed Amine Ammar
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY.

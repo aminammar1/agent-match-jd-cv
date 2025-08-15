@@ -1,0 +1,16 @@
+name: Release Notification
+on:
+  release:
+    types: [published]
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build images
+        run: |
+          docker build -q -t cv-matcher-backend:${{ github.ref_name }} ./backend
+          docker build -q -t cv-matcher-frontend:${{ github.ref_name }} ./frontend
+      - name: Summary
+        run: echo "Release ${{ github.ref_name }} built" >> $GITHUB_STEP_SUMMARY
