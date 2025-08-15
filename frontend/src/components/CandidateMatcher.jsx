@@ -13,7 +13,7 @@ import {
   Grid,
 } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
-import axios from 'axios'
+import { api } from '../api/client'
 import { motion as Motion } from 'framer-motion'
 import PersonSearchIcon from '@mui/icons-material/PersonSearch'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -70,8 +70,8 @@ export default function CandidateMatcher({ onComplete, onNext }) {
     form.append('cv_file', cvFile)
 
     try {
-      const cvRes = await axios.post('http://localhost:8000/parse_cv/', form)
-      const matchRes = await axios.post('http://localhost:8000/match_cv_jd/', {
+      const cvRes = await api.post('/parse_cv/', form)
+      const matchRes = await api.post('/match_cv_jd/', {
         jd_summary: jdSummary,
         candidate_data: cvRes.data,
       })

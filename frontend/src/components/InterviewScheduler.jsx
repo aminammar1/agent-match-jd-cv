@@ -17,7 +17,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule'
 import EmailIcon from '@mui/icons-material/Email'
 import PersonIcon from '@mui/icons-material/Person'
 import SendIcon from '@mui/icons-material/Send'
-import axios from 'axios'
+import { api } from '../api/client'
 
 export default function InterviewScheduler({ onComplete }) {
   const [name, setName] = useState('')
@@ -39,8 +39,8 @@ export default function InterviewScheduler({ onComplete }) {
     setStatus('')
 
     try {
-      const res = await axios.post(
-        `http://localhost:8000/send_interview_email/?email=${encodeURIComponent(
+      const res = await api.post(
+        `/send_interview_email/?email=${encodeURIComponent(
           email
         )}&candidate_name=${encodeURIComponent(name)}&match_score=${score}`
       )

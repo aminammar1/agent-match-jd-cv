@@ -15,7 +15,7 @@ import { motion as Motion } from 'framer-motion'
 import DescriptionIcon from '@mui/icons-material/Description'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
-import axios from 'axios'
+import { api } from '../api/client'
 
 export default function JobDescriptionSummary({ onComplete }) {
   const [jd, setJd] = useState('')
@@ -50,11 +50,9 @@ export default function JobDescriptionSummary({ onComplete }) {
     }
 
     try {
-      const res = await axios.post(
-        'http://localhost:8000/summarize_jd/',
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      )
+      const res = await api.post('/summarize_jd/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
       const summaryText = res.data.summary
       setSummary(summaryText)
       localStorage.setItem('lastSummary', JSON.stringify({ text: summaryText }))
