@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, create_engine
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, create_engine, JSON, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import datetime
 
 Base = declarative_base()
 
@@ -13,22 +12,23 @@ SessionLocal = sessionmaker(bind=engine)
 class JobDescription(Base):
     __tablename__ = "job_descriptions"
     id = Column(Integer, primary_key=True, index=True)
-    summary = Column(String)
-    created_at = Column(DateTime(timezone=True), default=datetime.datetime.now(datetime.timezone.utc))
+    summary = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Candidate(Base):
     __tablename__ = "candidates"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    email = Column(String)
-    data = Column(String)  # JSON blob
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    data = Column(JSON)  # JSON type for structured data
 
 class Match(Base):
     __tablename__ = "matches"
     id = Column(Integer, primary_key=True, index=True)
-    candidate_id = Column(Integer)
-    jd_id = Column(Integer)
-    score = Column(Float)
-    timestamp = Column(DateTime(timezone=True), default=datetime.datetime.now(datetime.timezone.utc))
+    candidate_id = Column(Integer, ForeignKey("candidates.id"), nullable=False)
+    jd_id = Column(Integer, ForeignKey("job_descriptions.id"), nullable=False)
+    score = Column(Float, nullable=False)
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
+# Create all tables in the database
 Base.metadata.create_all(bind=engine)
