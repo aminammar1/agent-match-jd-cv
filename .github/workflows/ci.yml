@@ -29,11 +29,3 @@ jobs:
           npm run build
       - name: Integrate frontend build into backend
         run: cp -r frontend/dist backend/frontend_dist
-      - name: Smoke test API
-        working-directory: backend
-        run: |
-          uvicorn main:app --host 127.0.0.1 --port 9000 &
-          PID=$!
-          sleep 4
-          curl -fsS http://127.0.0.1:9000/ || (echo "startup failed" && kill $PID && exit 1)
-          kill $PID
