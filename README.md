@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🤖 AI Recruitment App · CV ↔️ JD Matcher
+# 🤖 AI Recruitment App · CV JD Matcher
 
-Automated CV parsing, job description summarization, and candidate ↔️ job matching with FastAPI + React.
+Automated CV parsing, job description summarization, and candidate  job matching with FastAPI + React.
 
 </div>
 
