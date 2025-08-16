@@ -23,20 +23,6 @@ app.include_router(candidate_router)
 def read_root():
     return {"message": "Welcome to the CV Matching JD AI API", "docs": "/docs"}
 
-# Serve built frontend if present (frontend_dist created during build)
-FRONTEND_DIST = Path(__file__).parent / "frontend_dist"
-INDEX_FILE = FRONTEND_DIST / "index.html"
-if FRONTEND_DIST.exists() and INDEX_FILE.exists():
-    # Mount assets (assumes Vite build output structure)
-    assets_dir = FRONTEND_DIST / "assets"
-    if assets_dir.exists():
-        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
-
-    @app.get("/{full_path:path}")  # SPA fallback
-    def spa_fallback(full_path: str):  # noqa: ARG001
-        if INDEX_FILE.exists():
-            return FileResponse(INDEX_FILE)
-        return {"detail": "Not Found"}
 
 if __name__ == "__main__":
     uvicorn.run(
