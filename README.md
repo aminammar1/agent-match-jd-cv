@@ -87,6 +87,7 @@ job-match-cv-react-fastapi/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Python 3.8+
 - Node.js 16+
 - Docker (optional)
@@ -94,6 +95,7 @@ job-match-cv-react-fastapi/
 ### 🔧 Local Development
 
 #### Backend Setup
+
 ```powershell
 # Navigate to backend directory
 Set-Location backend
@@ -110,6 +112,7 @@ uvicorn main:app --reload --port 8000
 ```
 
 #### Frontend Setup
+
 ```powershell
 # Navigate to frontend directory
 Set-Location frontend
@@ -133,6 +136,7 @@ docker build -t cv-matcher-frontend ./frontend
 ```
 
 **Access Points:**
+
 - 🎨 Frontend: http://localhost:5173
 - 🔙 Backend API: http://localhost:8000
 - 📚 API Docs: http://localhost:8000/docs
@@ -159,26 +163,27 @@ EMAIL_FROM=AI Recruiter <your_email@gmail.com>
 
 ## 🎯 API Endpoints
 
-| Method | Endpoint | Description | Request | Response |
-|--------|----------|-------------|---------|----------|
-| `GET` | `/` | Health check | - | Status message |
-| `POST` | `/summarize_jd` | Summarize job description | File upload | JD summary |
-| `POST` | `/parse_cv` | Extract CV text | File upload | Extracted text |
-| `POST` | `/match_cv_jd` | Calculate match score | Candidate + JD data | Match score & breakdown |
-| `POST` | `/send_interview_email` | Send interview invite | Candidate data | Email status |
+| Method | Endpoint                | Description               | Request             | Response                |
+| ------ | ----------------------- | ------------------------- | ------------------- | ----------------------- |
+| `GET`  | `/`                     | Health check              | -                   | Status message          |
+| `POST` | `/summarize_jd`         | Summarize job description | File upload         | JD summary              |
+| `POST` | `/parse_cv`             | Extract CV text           | File upload         | Extracted text          |
+| `POST` | `/match_cv_jd`          | Calculate match score     | Candidate + JD data | Match score & breakdown |
+| `POST` | `/send_interview_email` | Send interview invite     | Candidate data      | Email status            |
 
 ## 🧮 Scoring Algorithm
 
 The matching algorithm uses weighted scoring across multiple dimensions:
 
-| Dimension | Weight | Description |
-|-----------|--------|-------------|
-| 🛠️ **Skills** | 40% | Technical and soft skills matching |
-| 💼 **Experience** | 25% | Years of experience and role relevance |
-| 🎓 **Education** | 15% | Degree level and field of study |
-| 🏢 **Industry** | 20% | Industry background and domain knowledge |
+| Dimension         | Weight | Description                              |
+| ----------------- | ------ | ---------------------------------------- |
+| 🛠️ **Skills**     | 40%    | Technical and soft skills matching       |
+| 💼 **Experience** | 25%    | Years of experience and role relevance   |
+| 🎓 **Education**  | 15%    | Degree level and field of study          |
+| 🏢 **Industry**   | 20%    | Industry background and domain knowledge |
 
 **Scoring Features:**
+
 - Fuzzy string matching for partial matches
 - Penalty systems for missing critical requirements
 - Bonus points for exceeding requirements
@@ -187,26 +192,31 @@ The matching algorithm uses weighted scoring across multiple dimensions:
 ## 🤖 AI Components
 
 ### 1. **Summarization Agent**
+
 - **Service**: Hugging Face Inference API
 - **Model**: `facebook/bart-large-cnn`
 - **Purpose**: Extract key information from job descriptions
 
 ### 2. **LLM Extraction Agent** (Optional)
+
 - **Service**: OpenRouter API
 - **Model**: `openai/gpt-oss-20b:free`
 - **Purpose**: Structured field extraction (skills, experience, qualifications)
 
 ### 3. **Parser Agent**
+
 - **Technology**: Local Python libraries
 - **Formats**: PDF, DOCX, TXT
 - **Features**: Text extraction, formatting cleanup
 
 ### 4. **Matching Agent**
+
 - **Algorithm**: RapidFuzz + Custom heuristics
 - **Features**: Multi-dimensional scoring, fuzzy matching
 - **Performance**: Local processing, no API calls
 
 ### 5. **Scheduler Agent**
+
 - **Protocol**: SMTP with TLS
 - **Features**: Template-based emails, async sending
 - **Fallback**: Graceful degradation if email unavailable
@@ -214,6 +224,7 @@ The matching algorithm uses weighted scoring across multiple dimensions:
 ## 🛠️ Tech Stack
 
 ### Backend
+
 - **Framework**: FastAPI
 - **Language**: Python 3.8+
 - **AI/ML**: Hugging Face Transformers, RapidFuzz
@@ -221,6 +232,7 @@ The matching algorithm uses weighted scoring across multiple dimensions:
 - **File Processing**: PyPDF2, python-docx
 
 ### Frontend
+
 - **Framework**: React 19
 - **Build Tool**: Vite
 - **UI Library**: Material-UI (MUI)
@@ -230,6 +242,7 @@ The matching algorithm uses weighted scoring across multiple dimensions:
 - **PDF Viewer**: React-PDF
 
 ### DevOps
+
 - **Containerization**: Docker & Docker Compose
 - **Deployment**: Render (cloud-ready)
 - **Environment**: Cross-platform support
@@ -239,24 +252,28 @@ The matching algorithm uses weighted scoring across multiple dimensions:
 ### Common Issues
 
 **❌ Empty job summary**
+
 ```
 Solution: Verify HF_TOKEN in .env file
 Check: Hugging Face API quotas and model availability
 ```
 
 **❌ Email sending fails**
+
 ```
 Solution: Confirm SMTP credentials and app password
 Check: Port 587 accessibility and TLS configuration
 ```
 
 **❌ Low match scores**
+
 ```
 Solution: Ensure job description contains technical terms
 Check: CV parsing quality and keyword extraction
 ```
 
 **❌ File upload errors**
+
 ```
 Solution: Verify file format (PDF/DOCX) and size limits
 Check: Backend CORS configuration
@@ -265,12 +282,14 @@ Check: Backend CORS configuration
 ## 🚀 Deployment
 
 ### Render.com (Recommended)
+
 ```bash
 # Use provided deployment script
 ./render-start.sh
 ```
 
 ### Custom Docker Deployment
+
 ```bash
 # Production build
 docker-compose -f docker-compose.prod.yml up --build
