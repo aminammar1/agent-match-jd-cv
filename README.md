@@ -1,294 +1,119 @@
-# 🤖 AI CV-JD Matcher
+<div align="center">
 
-> **Smart recruitment automation**: Parse CVs, summarize job descriptions, calculate match scores, and send interview invitations using AI-powered agents.
+# AI CV ↔ JD Matcher
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com/)
+Lightweight recruitment helper: parse CVs, summarize job descriptions, score matches, send interview invites.
+
+</div>
 
 ---
 
-## 🌟 Features
+## Overview
 
-- **📄 CV Parsing**: Extract text from PDF/Word documents
-- **📝 JD Summarization**: AI-powered job description summarization
-- **🎯 Smart Matching**: Fuzzy matching algorithm with weighted scoring
-- **📊 Interactive Dashboard**: Real-time visualization of match scores
-- **📧 Auto Email**: Send interview invitations automatically
-- **🔧 Agent Architecture**: Modular AI agents for each task
+Uploads a Job Description (JD) and Candidate CV, produces a concise JD summary (Hugging Face), extracts CV text, and calculates a match score using deterministic heuristics + fuzzy skill matching. Optional LLM step (OpenRouter) can turn JD into structured fields. High scores can trigger an email invite.
 
-## 🏗️ Architecture
+## Folder Structure
 
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │    │   AI Services   │
-│   (React)       │◄──►│   (FastAPI)     │◄──►│                 │
-│                 │    │                 │    │ • Hugging Face  │
-│ • Dashboard     │    │ • REST APIs     │    │ • OpenRouter    │
-│ • File Upload   │    │ • Agent System  │    │ • Local ML      │
-│ • Visualizations│    │ • SMTP Service  │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+backend/
+  main.py                  # FastAPI entry
+  agents/
+    cv_parser_agent.py     # PDF/text extraction
+    matching_cv_jd_agent.py# Scoring logic
+    summarizer_agent.py    # (Optional) LLM field extraction
+    scheduler_agent.py     # SMTP email sender
+  services/
+    summarization_service.py # Hugging Face JD summarization
+    candidate_service.py     # Orchestrates parse/match/email
+  routes/                  # API endpoints
+  database/models.py       # Placeholder
+  .env                     # Environment variables
+
+frontend/
+  src/ (React components, api client)
+  package.json
+
+render-start.sh / render-build.sh  # Deployment helpers
+Dockerfile / docker-compose.yml    # Containerization
 ```
 
-## 📁 Project Structure
+## AI Components
 
-```
-job-match-cv-react-fastapi/
-├── 🔧 docker-compose.yml          # Container orchestration
-├── 📖 README.md                   # Project documentation
-├── 🚀 render-start.sh             # Deployment script
-│
-├── 🔙 backend/
-│   ├── 🐍 main.py                 # FastAPI application entry
-│   ├── 📦 requirements.txt        # Python dependencies
-│   ├── 🐳 Dockerfile              # Backend container
-│   │
-│   ├── 🤖 agents/                 # AI Agent modules
-│   │   ├── cv_parser_agent.py     # PDF/text extraction
-│   │   ├── matching_cv_jd_agent.py# Scoring algorithms
-│   │   ├── summarizer_agent.py    # LLM field extraction
-│   │   └── scheduler_agent.py     # Email automation
-│   │
-│   ├── 🗄️ database/
-│   │   └── models.py              # Data models
-│   │
-│   ├── 🛣️ routes/                 # API endpoints
-│   │   ├── candidate_routes.py    # Candidate operations
-│   │   └── job_routes.py          # Job operations
-│   │
-│   └── ⚙️ services/               # Business logic
-│       ├── candidate_service.py   # Candidate orchestration
-│       └── summarization_service.py# AI summarization
-│
-└── 🎨 frontend/
-    ├── 📦 package.json            # Node.js dependencies
-    ├── 🐳 Dockerfile              # Frontend container
-    ├── ⚡ vite.config.js          # Vite configuration
-    │
-    └── 📁 src/
-        ├── 📱 App.jsx             # Main application
-        ├── 🎨 main.jsx            # React entry point
-        │
-        ├── 🌐 api/
-        │   └── client.js          # API client
-        │
-        └── 🧩 components/         # React components
-            ├── CandidateMatcher.jsx
-            ├── Dashboard.jsx
-            ├── InterviewScheduler.jsx
-            ├── JobDescriptionSummary.jsx
-            ├── LandingPage.jsx
-            ├── PDFPreview.jsx
-            ├── SkillChart.jsx
-            └── SkillsBreakdownChart.jsx
-```
+- **Hugging Face Inference API**: Summarizes JD text using `facebook/bart-large-cnn` model (remote, no local GPU required).
+- **OpenRouter LLM** (optional): Structured extraction using `openai/gpt-oss-20b:free` model for parsing skills, experience, and qualification fields.
+- **Matching**: Local Python (RapidFuzz + regex). No external call.
 
-## 🚀 Quick Start
+## Tech Stack
 
-### Prerequisites
-- Python 3.8+
-- Node.js 16+
-- Docker (optional)
+FastAPI, React + Vite, RapidFuzz, aiosmtplib, Hugging Face Inference API, optional OpenRouter LLM.
 
-### 🔧 Local Development
+## Run (Windows PowerShell)
 
-#### Backend Setup
+Backend:
+
 ```powershell
-# Navigate to backend directory
 Set-Location backend
-
-# Create and activate virtual environment
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-# Install dependencies
+python -m venv .venv; . .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-
-# Start development server
 uvicorn main:app --reload --port 8000
 ```
 
-#### Frontend Setup
+Frontend:
+
 ```powershell
-# Navigate to frontend directory
 Set-Location frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
 
-### 🐳 Docker Deployment
+Open: http://localhost:5173 (UI) → backend at http://localhost:8000
 
-```powershell
-# Build and run with Docker Compose
-docker-compose up --build
+## Key Environment Variables (backend/.env)
 
-# Or run individually
-docker build -t cv-matcher-backend ./backend
-docker build -t cv-matcher-frontend ./frontend
 ```
-
-**Access Points:**
-- 🎨 Frontend: http://localhost:5173
-- 🔙 Backend API: http://localhost:8000
-- 📚 API Docs: http://localhost:8000/docs
-
-## ⚙️ Configuration
-
-Create a `.env` file in the backend directory:
-
-```env
-# Required: Hugging Face API
-HF_TOKEN=your_hugging_face_token
+HF_TOKEN=your_hf_api_token
 HF_SUMMARIZATION_MODEL=facebook/bart-large-cnn
-
-# Optional: Advanced LLM features
-OPENROUTER_API_KEY=your_openrouter_key
-
-# Optional: Email automation
+OPENROUTER_API_KEY=your_openrouter_key   # (optional)
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_app_password
-EMAIL_FROM=AI Recruiter <your_email@gmail.com>
+EMAIL_FROM=Recruiting Bot <your_email@gmail.com>
 ```
 
-## 🎯 API Endpoints
+Only set what you use.
 
-| Method | Endpoint | Description | Request | Response |
-|--------|----------|-------------|---------|----------|
-| `GET` | `/` | Health check | - | Status message |
-| `POST` | `/summarize_jd` | Summarize job description | File upload | JD summary |
-| `POST` | `/parse_cv` | Extract CV text | File upload | Extracted text |
-| `POST` | `/match_cv_jd` | Calculate match score | Candidate + JD data | Match score & breakdown |
-| `POST` | `/send_interview_email` | Send interview invite | Candidate data | Email status |
+## Core Endpoints
 
-## 🧮 Scoring Algorithm
+| Endpoint                   | Purpose                                |
+| -------------------------- | -------------------------------------- |
+| POST /summarize_jd         | Upload JD file → summary               |
+| POST /parse_cv             | Upload CV → extracted text             |
+| POST /match_cv_jd          | Provide candidate + jd summary → score |
+| POST /send_interview_email | Send invite if score high              |
 
-The matching algorithm uses weighted scoring across multiple dimensions:
+## Match Scoring (Default Weights)
 
-| Dimension | Weight | Description |
-|-----------|--------|-------------|
-| 🛠️ **Skills** | 40% | Technical and soft skills matching |
-| 💼 **Experience** | 25% | Years of experience and role relevance |
-| 🎓 **Education** | 15% | Degree level and field of study |
-| 🏢 **Industry** | 20% | Industry background and domain knowledge |
+Skills 40% • Experience 25% • Education 15% • Industry 20%  
+Partial matches credited via fuzzy ratio. Bounds and penalties keep scores realistic.
 
-**Scoring Features:**
-- Fuzzy string matching for partial matches
-- Penalty systems for missing critical requirements
-- Bonus points for exceeding requirements
-- Normalized scores (0-100 scale)
+## Email
 
-## 🤖 AI Components
+`scheduler_agent.py` sends a simple invitation via SMTP using env credentials. Fails gracefully if not configured.
 
-### 1. **Summarization Agent**
-- **Service**: Hugging Face Inference API
-- **Model**: `facebook/bart-large-cnn`
-- **Purpose**: Extract key information from job descriptions
+## Docker
 
-### 2. **Parser Agent**
-- **Technology**: Local Python libraries
-- **Formats**: PDF, DOCX, TXT
-- **Features**: Text extraction, formatting cleanup
-
-### 3. **Matching Agent**
-- **Algorithm**: RapidFuzz + Custom heuristics
-- **Features**: Multi-dimensional scoring, fuzzy matching
-- **Performance**: Local processing, no API calls
-
-### 4. **Scheduler Agent**
-- **Protocol**: SMTP with TLS
-- **Features**: Template-based emails, async sending
-- **Fallback**: Graceful degradation if email unavailable
-
-## 🛠️ Tech Stack
-
-### Backend
-- **Framework**: FastAPI
-- **Language**: Python 3.8+
-- **AI/ML**: Hugging Face Transformers, RapidFuzz
-- **Email**: aiosmtplib
-- **File Processing**: PyPDF2, python-docx
-
-### Frontend
-- **Framework**: React 19
-- **Build Tool**: Vite
-- **UI Library**: Material-UI (MUI)
-- **Charts**: Recharts
-- **Animations**: Framer Motion
-- **File Upload**: React Dropzone
-- **PDF Viewer**: React-PDF
-
-### DevOps
-- **Containerization**: Docker & Docker Compose
-- **Deployment**: Render (cloud-ready)
-- **Environment**: Cross-platform support
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-**❌ Empty job summary**
-```
-Solution: Verify HF_TOKEN in .env file
-Check: Hugging Face API quotas and model availability
+```powershell
+docker build -t cv-matcher .
+docker run -p 8000:8000 cv-matcher
 ```
 
-**❌ Email sending fails**
-```
-Solution: Confirm SMTP credentials and app password
-Check: Port 587 accessibility and TLS configuration
-```
+## Troubleshooting
 
-**❌ Low match scores**
-```
-Solution: Ensure job description contains technical terms
-Check: CV parsing quality and keyword extraction
-```
+- Empty summary → check HF token
+- Email fail → verify app password / port 587 TLS
+- Low match → ensure JD summary retained key tech terms
 
-**❌ File upload errors**
-```
-Solution: Verify file format (PDF/DOCX) and size limits
-Check: Backend CORS configuration
-```
+## License
 
-## 🚀 Deployment
-
-### Render.com (Recommended)
-```bash
-# Use provided deployment script
-./render-start.sh
-```
-
-### Custom Docker Deployment
-```bash
-# Production build
-docker-compose -f docker-compose.prod.yml up --build
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-MIT License © 2025 Mohamed Amine Ammar
-
----
-
-<div align="center">
-
-**Built with ❤️ for smarter recruitment**
-
-[🐛 Report Bug](https://github.com/aminammar1/agent-match-jd-cv/issues) • [✨ Request Feature](https://github.com/aminammar1/agent-match-jd-cv/issues) • [📖 Documentation](https://github.com/aminammar1/agent-match-jd-cv/wiki)
-
-</div>
+MIT © 2025 Mohamed Amine Ammar
